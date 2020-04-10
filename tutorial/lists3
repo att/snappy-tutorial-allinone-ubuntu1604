@@ -1,0 +1,5 @@
+#!/bin/bash
+
+aws s3 ls --no-verify-ssl
+echo
+aws s3 ls s3://snappybackups --no-verify-ssl

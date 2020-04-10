@@ -1,0 +1,104 @@
+#!/bin/bash
+
+NUM=$(ps aux | grep apt | wc -l)
+
+if [ $NUM -gt 1  ]
+then
+    echo "Please wait until all apt-get operations are complete"
+    echo "   (apt.systemd.daily may be running)"
+    exit 0
+else
+    echo "Starting Snappy All-In-One initialization"
+fi
+
+mkdir srv
+
+echo "Initializing Ceph"
+sudo apt update
+sudo apt -y install ceph-deploy
+sudo cat /etc/hosts | fgrep -v "127.0.0.1" > host.tmp
+sudo cp host.tmp /etc/hosts
+tar xzf init_tiny_ceph.tgz
+./ceph_init
+
+sleep 3
+
+echo "Initializing S3"
+cd srv
+sudo tar xzf ../s3.tgz
+cd ..
+sudo srv/s3/bin/start
+
+
+sleep 3
+
+# Installing AWS client
+sudo apt-get -y install awscli
+sudo apt-get -y install python3-pip
+pip3 install awscli-plugin-endpoint
+mkdir ~/.aws
+cp awsconfig ~/.aws/config
+aws s3 mb s3://snappybackups --no-verify-ssl
+
+sleep 3
+
+echo "Initializing Snappy DB"
+cd srv
+sudo tar xzf ../snappy-db-chroot-0.1.1.tgz
+sudo snappy-mysql/bin/start
+cd ..
+
+sleep 3
+
+echo "Initializing Snappy Core"
+cd srv
+sudo tar xzf ../snappy-core-chroot-v0.4.tgz
+sudo snappycore/bin/start
+cd ..
+
+sleep 3
+
+echo "Initializing Snappy Agent"
+cd srv
+sudo tar xzf ../snappy-agent-chroot-v0.4.1.tgz
+sudo snappy-agent/bin/start 9999
+cd ..
+
+sleep 3
+
+echo "Initializing Snappy Frontend"
+cd srv
+sudo tar xzf ../snappy-fe-chroot-v0.6.0-slim.tgz
+cd ..
+sleep 10
+
+# update the frontendTables.json and .sql files with the local Ceph key
+KEY=$(ceph auth list | fgrep "client.admin" -A 1 | grep key | cut -d ":" -f 2 | xargs)
+echo client.admin=$KEY
+cat frontendTables-nokey.sql | sed -e "s@CEPHKEY@$KEY@g" > frontendTables.sql
+cat frontendTables-nokey.json | sed -e "s@CEPHKEY@$KEY@g" > frontendTables.json
+sudo cp frontendTables.sql srv/snappyfe/data/srv/Snappy-Frontend/src/
+sudo cp frontendTables.json srv/snappyfe/data/srv/Snappy-Frontend/src/
+sudo chown 41000:41000 srv/snappyfe/data/srv/Snappy-Frontend/src/frontendTables.sql
+sudo chown 41000:41000 srv/snappyfe/data/srv/Snappy-Frontend/src/frontendTables.json
+
+sudo srv/snappyfe/bin/start 8888
+
+
+sleep 3
+
+echo "creating and mounting RBD volume at /mnt/rbd1"
+sudo rbd create rbdtest --size 100M --image-feature layering
+sudo rbd map rbdtest --name client.admin
+sudo mkfs.ext4 -m0  /dev/rbd0
+
+sudo rm -rf /mnt/rbd1
+sudo mkdir /mnt/rbd1
+sudo mount /dev/rbd0 /mnt/rbd1
+sudo chmod -R 777 /mnt/rbd1
+
+sudo echo "111" > /mnt/rbd1/1.txt
+sudo echo "222" > /mnt/rbd1/2.txt
+
+
+./status-all

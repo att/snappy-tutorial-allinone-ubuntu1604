@@ -1,0 +1,10 @@
+[plugins]
+endpoint = awscli_plugin_endpoint
+
+[default]
+aws_access_key_id = snappy
+aws_secret_access_key = password
+verify_ssl = false
+region = us-east-1
+s3 =
+    endpoint_url = https://127.0.0.1:38000

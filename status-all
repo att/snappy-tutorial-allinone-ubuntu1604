@@ -1,0 +1,53 @@
+echo ""
+echo "Snappy All-In-One Component Status"
+echo "----------------------------------"
+
+if [[ $(ps aux | grep frontend.py | grep python) ]]; then
+    if [[ $(curl -s 127.0.0.1:8888 | grep version) ]]; then
+        echo "Snappy Frontend:  OK"
+    else
+        echo "Snappy Frontend:  Connection not made"
+    fi
+else
+    echo "Snappy Frontend:  Not running"
+fi
+
+if [[ $(ps aux | grep agent.py | grep python) ]]; then
+    if [[ $(curl -s 127.0.0.1:9999 | grep version) ]]; then
+        echo "Snappy Agent:     OK"
+    else
+        echo "Snappy Agent:     Connection not made"
+    fi
+else
+    echo "Snappy Agent:     Not running"
+fi
+
+if [[ $(ps aux | grep xcore | grep bin) ]]; then
+    echo "Snappy Core:      OK"
+else
+    echo "Snappy Core:      Not running"
+fi
+
+if [[ $(ps aux | grep mysqld | grep usr) ]]; then
+    echo "Snappy Database:  OK"
+else
+    echo "Snappy Database:  Not running"
+fi
+
+if [[ $(ceph status | grep HEALTH_OK ) ]]; then
+    echo "Ceph:             OK"
+else
+    echo "Ceph:             Health not OK"
+fi
+
+if [[ $(ps aux | grep minio | grep s3) ]]; then
+    if [[ $(aws s3 ls --no-verify-ssl 2>/dev/null | grep snappybackups) ]]; then
+        echo "S3:               OK"
+    else
+        echo "S3:               Connection not made to S3 or "snappybackups" bucket doesn't exist"
+    fi
+else
+    echo "S3:               Not running"
+fi
+
+echo ""

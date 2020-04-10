@@ -1,0 +1,89 @@
+# an RBD image has already been created and mounted at /mnt/rbd1
+# Two files have also been created (1.txt, 2.txt)
+# List the files:
+
+./listrbd
+
+
+
+# backup up the RBD image "rbdtest"
+curl -X POST http://127.0.0.1:8888/v2/default/jobs/  -d "{ \"source_type\":\"rbd\", \"source_id\":\"rbdtest\", \"count\":\"1\",\"full_interval\":\"2\",\"delta_interval\":\"1\"}"
+
+
+# Watch progress of the backup
+# 
+# jobs should be created for:
+#	- bk_single_sched
+#	- bk_single_full
+#	- snap
+#	- export
+#	- put
+#
+# Wait for: 
+#	state column to be "done" 
+#	result column to be "0" 
+# for all 5 of those jobs
+
+[watch] curl -X GET http://127.0.0.1:8888/v2/default/jobs/summary.txt
+
+
+# write more files to the RBD images (state 2)
+sudo echo "333" > /mnt/rbd1/3.txt
+sudo echo "444" > /mnt/rbd1/4.txt
+
+
+# verify that files "1.txt", "2.txt", "3.txt" and "4.txt" all exist
+ls -l /mnt/rbd1
+
+
+# restore the RBD image from the backup
+# first unmount the RBD image
+sudo umount /mnt/rbd1
+
+
+# the id number the "export" job from above backup must be used in this command
+# EXAMPLE
+# ->curl -X GET http://127.0.0.1:8888/v2/default/jobs/summary.txt
+# id	state	done	result	feid	arg0	arg1
+# 1	Done	1	0	rbdtest	bk_single_sched	{ "full_bk_intvl" : 2, "incr_bk_intvl" : 3, "count": 1, "sched_time": 0 }	
+# 2	Done	1	0	rbdtest	bk_single_full		
+# 3	Done	1	0	rbdtest	snap		
+# 4	Done	1	0	rbdtest	export		
+# 5	Done	1	0	rbdtest	put
+#
+# In the above example, the job id would be 4
+
+curl -X POST http://localhost:8888/v2/default/jobs/<export_job_id>
+
+
+# watch progress of the restore
+# 
+# jobs should be created for:
+#       - rstr_single
+#       - get
+#       - import
+#
+# Wait for:
+#       state column to be "done"
+#       result column to be "0"
+# for all 3 of those jobs
+#
+# EXAMPLE
+# ->curl -X GET http://127.0.0.1:8888/v2/default/jobs/summary.txt
+# 6	Done	1	0	rbdtest	rstr_single	{"rstr_to_job_id" : 4}	
+# 7	Done	1	0	rbdtest	get	{"rstr_to_job_id" : 4}	
+# 8	Done	1	0	rbdtest	import
+
+[watch] curl -X GET http://127.0.0.1:8888/v2/default/jobs/summary.txt
+
+
+# remount the newly restored RBD image (use the same device as previously used)
+sudo mount /dev/rbd0 /mnt/rbd1
+
+
+# verify the RBD image is now back in the state that it was backed up in"
+#
+# files "1.txt" and "2.txt" should exist, but not "3.txt" or "4.txt"
+ls -l /mnt/rbd1
+
+
