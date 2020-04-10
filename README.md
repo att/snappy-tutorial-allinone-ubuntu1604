@@ -1,0 +1,1 @@
+# snappy-tutorial-allinone-ubuntu1604
