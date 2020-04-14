@@ -127,22 +127,24 @@ To set up your own RBD Source and S3 Target, follow these steps:
 
 	srv/snappyfe/bin/edit_tables
 
-	5a) Enter "1" to add a new source.  You will also need to name the source
-	
-	5b) Enter "2" to add a new target.  You will also need to name the target
+	5a) Enter "4" to delete the old source.  Delete the old RBD source by name ("tutorialRBD")
 
-	5c) Enter "3" to add a new tenant.  A tenant is how the target is chosen
+	5b) Enter "1" to add a new source.  You will also need to name the source
+	
+	5c) Enter "2" to add a new target.  You will also need to name the target
+
+	5d) Enter "3" to add a new tenant.  A tenant is how the target is chosen
 		in the URL of the REST command.  In the tutorial, the tenant was "default"
 
 		- The name of the tenant will be used in the REST command
 		- Enter "None" for the auth_type for an initial setup
 		- Enter "None" for the password
-		- Enter the name of the target that was entered in step 5b as the target_name
+		- Enter the name of the target that was entered in step 5c as the target_name
 
-	5d) Enter "7" to save these changes and convert the data to an SQL file 
+	5e) Enter "7" to save these changes and convert the data to an SQL file 
 		so it will be used by the Snappy Frontend
 
-	5e) Enter "8" to quit
+	5f) Enter "8" to quit
 
 5) Start the Snappy Frontend
 
