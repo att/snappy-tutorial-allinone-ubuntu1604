@@ -1,9 +1,12 @@
+*******************
+* Snappy Tutorial *
+*******************
+
 # an RBD image has already been created and mounted at /mnt/rbd1
 # Two files have also been created (1.txt, 2.txt)
 # List the files:
 
-./listrbd
-
+sudo ls -l /mnt/rbd1
 
 
 # backup up the RBD image "rbdtest"
@@ -78,12 +81,84 @@ curl -X POST http://localhost:8888/v2/default/jobs/<export_job_id>
 
 
 # remount the newly restored RBD image (use the same device as previously used)
+
 sudo mount /dev/rbd0 /mnt/rbd1
+
 
 
 # verify the RBD image is now back in the state that it was backed up in"
 #
 # files "1.txt" and "2.txt" should exist, but not "3.txt" or "4.txt"
+
 ls -l /mnt/rbd1
 
 
+If you'd like to use this allinone Snappy setup further, keep in mind that the Ceph
+system is limited to about 500MB of storage.
+
+
+
+**************
+* Next Steps *
+**************
+
+To set up your own RBD Source and S3 Target, follow these steps:
+
+1) Assure that there is network connectivity to the new Source and Target
+
+2) For the RBD source, you will need:
+	- IP address of the Ceph monitor
+	- user name (generally "admin")
+	- user key
+	- pool (generally "rbd")
+
+3) For the S3 endpoint, you will need:
+	- Endpoint URL
+	- user name
+	- user password
+	- S3 bucket name
+	- S3 region
+
+4) Stop the Snappy Frontend
+
+	srv/snappyfe/bin/stop
+
+5) Edit the Snappy Frontend tables
+
+	srv/snappyfe/bin/edit_tables
+
+	5a) Enter "1" to add a new source.  You will also need to name the source
+	
+	5b) Enter "2" to add a new target.  You will also need to name the target
+
+	5c) Enter "3" to add a new tenant.  A tenant is how the target is chosen
+		in the URL of the REST command.  In the tutorial, the tenant was "default"
+
+		- The name of the tenant will be used in the REST command
+		- Enter "None" for the auth_type for an initial setup
+		- Enter "None" for the password
+		- Enter the name of the target that was entered in step 5b as the target_name
+
+	5d) Enter "7" to save these changes and convert the data to an SQL file 
+		so it will be used by the Snappy Frontend
+
+	5e) Enter "8" to quit
+
+5) Start the Snappy Frontend
+
+	srv/snappyfe/bin/start [port_number]
+
+	The port number will default to 8080 if one is not specified.  In the tutorial, the port number was 8888.
+
+
+To use the new target, issue commands with the new tenant name.
+
+For example, to start a backup in the tutorial, we used:
+
+	curl -X POST http://127.0.0.1:8888/v2/default/jobs/  -d (data section)
+
+To use the new target, change the tenant name from "default" to the new name (e.g. "myS3"):
+
+	curl -X POST http://127.0.0.1:8888/v2/myS3/jobs/  -d (data section)	
+
+For full options on the commands, see the Snappy Frontend documentation.
