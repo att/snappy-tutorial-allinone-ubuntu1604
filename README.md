@@ -2,7 +2,7 @@
 
 # snappy-allinone-tutorial-ubuntu1604
 
-An all-in-one installation of Snappy with a tutorial, to be used for demonstration purposes.
+Snappy is a backup and restore framework designed for the cloud infrastructure.  This is an all-in-one installation of Snappy with a tutorial, to be used for demonstration purposes.
 
 To install and initialize, run the script:
 
