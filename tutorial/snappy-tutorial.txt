@@ -1,6 +1,6 @@
-*******************
-* Snappy Tutorial *
-*******************
+*********************
+** Snappy Tutorial **
+*********************
 
 # an RBD image has already been created and mounted at /mnt/rbd1
 # Two files have also been created (1.txt, 2.txt)
@@ -93,14 +93,15 @@ sudo mount /dev/rbd0 /mnt/rbd1
 ls -l /mnt/rbd1
 
 
-If you'd like to use this allinone Snappy setup further, keep in mind that the Ceph
-system is limited to about 500MB of storage.
+If you'd like to use this allinone Snappy setup further, keep in mind that this
+Ceph system installed for the tutorial is limited to about 500MB of storage.
 
 
 
-**************
-* Next Steps *
-**************
+
+****************
+** Next Steps **
+****************
 
 To set up your own RBD Source and S3 Target, follow these steps:
 
@@ -127,17 +128,17 @@ To set up your own RBD Source and S3 Target, follow these steps:
 
 	srv/snappyfe/bin/edit_tables
 
-	5a) Enter "4" to delete the old source.  Delete the old RBD source by name ("tutorialRBD")
+	5a) Enter "4" to delete the old RBD source "tutorialRBD" (there should only be 1 RBD source per Frontend).  
 
-	5b) Enter "1" to add a new source.  You will also need to name the source
+	5b) Enter "1" to add a new source.  You will also need to name the source.
 	
-	5c) Enter "2" to add a new target.  You will also need to name the target
+	5c) Enter "2" to add a new target.  You will also need to name the target.
 
 	5d) Enter "3" to add a new tenant.  A tenant is how the target is chosen
 		in the URL of the REST command.  In the tutorial, the tenant was "default"
 
-		- The name of the tenant will be used in the REST command
-		- Enter "None" for the auth_type for an initial setup
+		- The name of the tenant will be used in the REST command, so choose a name accordingly (e.g. no spaces, alphanumerics)
+		- Enter "None" for the auth_type for a simple initial setup
 		- Enter "None" for the password
 		- Enter the name of the target that was entered in step 5c as the target_name
 
@@ -150,7 +151,7 @@ To set up your own RBD Source and S3 Target, follow these steps:
 
 	srv/snappyfe/bin/start [port_number]
 
-	The port number will default to 8080 if one is not specified.  In the tutorial, the port number was 8888.
+	The port number will default to 8080 if one is not specified.  The tutorial used port number 8888.
 
 
 To use the new target, issue commands with the new tenant name.
