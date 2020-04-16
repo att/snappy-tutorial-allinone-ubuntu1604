@@ -3,7 +3,10 @@
 # snappy-tutorial-allinone-ubuntu1604
 
 Snappy is a backup and restore framework designed for the cloud infrastructure.  This is an all-in-one installation of Snappy that includes a source and a target, all contained in a single VM.  The tutorial is to be used for demonstration purposes and should help to understand how Snappy works.
-![Snappy all-in-one with local source and target](https://github.com/att/snappy-tutorial-allinone-ubuntu1604/blob/master/images/snappy-tutorial-diagram-1.jpg)
+<p align="center">
+<img src="images/snappy-tutorial-diagram-1.jpg" width="459" height="571">
+</p>
+
 The tutorial is designed to be used with Ubuntu 16.04.  That limitation is for the small Ceph installation that is included.  
 
 # Installation
@@ -142,7 +145,10 @@ Ceph system installed for the tutorial is limited to about 500MB of storage.
 
 # Use an External Source and Target
 
-![Snappy all-in-one with remote source and target](https://github.com/att/snappy-tutorial-allinone-ubuntu1604/blob/master/images/snappy-tutorial-diagram-2.jpg)
+<p align="center">
+<img src="images/snappy-tutorial-diagram-2.jpg" width="459" height="587">
+</p>
+
 
 To set up your own RBD Source and S3 Target, follow these steps:
 
