@@ -7,7 +7,7 @@ Snappy is a backup and restore framework designed for the cloud infrastructure. 
 <img src="images/snappy-tutorial-diagram-1.jpg" width="459" height="571">
 </p>
 
-The tutorial is designed to be used with Ubuntu 16.04.  That limitation is for the small Ceph installation that is included.  
+The tutorial is designed to be used with Ubuntu 16.04.  That limitation is due to the small Ceph installation that is included.  It has been verified to work on Openstack and AWS VMs.  
 
 # Installation
 
