@@ -57,7 +57,7 @@ List the files:
 
 Backup up the RBD image "rbdtest":
 
-	curl -X POST http://127.0.0.1:8888/v2/default/jobs/  -d "{ "source_type\":\"rbd\", \"source_id\":\"rbdtest\", "count\":\"1\",\"full_interval\":\"2\",\"delta_interval\":\"1\"}"
+	curl -X POST http://127.0.0.1:8888/v2/default/jobs/  -d "{\"source_type\":\"rbd\", \"source_id\":\"rbdtest\", \"count\":\"1\",\"full_interval\":\"2\",\"delta_interval\":\"1\"}"
 
 
 Watch progress of the backup
@@ -104,7 +104,7 @@ EXAMPLE
 
 In the above example, the job id would be 4
 
-	curl -X POST http://localhost:8888/v2/default/jobs/4
+	curl -X POST http://127.0.0.1:8888/v2/default/jobs/4
 
 
 Watch progress of the restore.
