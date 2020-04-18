@@ -56,7 +56,7 @@ sudo umount /mnt/rbd1
 #
 # In the above example, the job id would be 4
 
-curl -X POST http://localhost:8888/v2/default/jobs/<export_job_id>
+curl -X POST http://127.0.0.1:8888/v2/default/jobs/<export_job_id>
 
 
 # watch progress of the restore
