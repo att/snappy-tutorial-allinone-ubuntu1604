@@ -63,11 +63,11 @@ Backup up the RBD image "rbdtest":
 Watch progress of the backup
  
  Jobs should be created for:
-	- bk_single_sched
-	- bk_single_full
-	- snap
-	- export
-	- put
+- bk_single_sched
+- bk_single_full
+- snap
+- export
+- put
 
 Wait for the state column to be "done"  and the result column to be "0" for all 5 of those jobs.
 
@@ -109,9 +109,9 @@ In the above example, the job id would be 4
 
 Watch progress of the restore.
 Jobs should be created for:
-       - rstr_single
-       - get
-       - import
+- rstr_single
+- get
+- import
 
 Wait for the state column to be "Done" and the result column to be "0" for all 3 of those jobs.
 
